@@ -17,15 +17,6 @@
       --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
       --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
     }
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        --bg: #0E1413; --surface: #152020; --sunk: #1C2827; --ink: #F3F9F7;
-        --muted: #B8C8C5; --line: #2A3735; --accent: #4FA6AA; --accent-soft: #17383A;
-        --bar: #2E5F62; --on-accent: #0E1413; --brass: #E2BD6B; --brass-soft: #382D16;
-        --ok: #6BBF8B; --ok-soft: #163323; --warn: #DFAD4E; --warn-soft: #382C13;
-        --bad: #E47B72; --bad-soft: #3B1D1B;
-      }
-    }
     * { box-sizing: border-box }
     body {
       background: var(--bg);
@@ -131,6 +122,58 @@
     .story h2 {
       font-size: 26px;
       margin-bottom: 20px;
+    }
+    .story-creator {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+    .story-creator img {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 3px 10px rgb(0 0 0/.14);
+    }
+    .story-creator .who b {
+      font-family: var(--display);
+      font-size: 19px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .story-creator .who span {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .story-creator {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid var(--line);
+    }
+    .story-creator img {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 3px 10px rgb(0 0 0/.14);
+    }
+    .story-creator .who b {
+      font-family: var(--display);
+      font-size: 19px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .story-creator .who span {
+      font-size: 14px;
+      color: var(--muted);
     }
     .story p {
       margin: 0 0 16px;
@@ -457,6 +500,13 @@
 
     <!-- Story / Pain -->
     <section class="story">
+      <div class="story-creator">
+        <img src="Foto_abner.png" alt="Abner Fiorili tocando violino numa cerimônia">
+        <div class="who">
+          <b>Abner Fiorili</b>
+          <span>Violino, violoncelo, clarinete e trompete. Músico e dono de uma central com mais de 100 eventos por ano.</span>
+        </div>
+      </div>
       <h2>O casamento que me deu R$ 66 de lucro</h2>
       <p>Fechei um casamento por R$ 1.400. Trio de músicos, um dia inteiro de trabalho.</p>
       <p>Quando fui fazer a conta, descobri que tinha sobrado <strong>R$ 66</strong>.</p>
