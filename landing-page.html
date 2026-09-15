@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Músicos — Descubra quanto sobra de cada evento</title>
+  <meta name="description" content="Sistema web que mostra o lucro real de cada casamento após pagar músicos, fotógrafo, comissão e imposto. Organiza a escala no mesmo lugar. R$ 47/mês.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      --bg: #F3F5F4; --surface: #FFFFFF; --sunk: #E8EDEB; --ink: #0A0F0E;
+      --muted: #2D3836; --line: #D8DFDD; --accent: #0E5A61; --accent-soft: #D5E7E7;
+      --bar: #9CC6C8; --on-accent: #FFFFFF; --brass: #7A5812; --brass-soft: #F1E5CB;
+      --ok: #2A7549; --ok-soft: #DAEEE1; --warn: #94640F; --warn-soft: #F5E9CD;
+      --bad: #AA3434; --bad-soft: #F5DDDB;
+      --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+      --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0E1413; --surface: #152020; --sunk: #1C2827; --ink: #F3F9F7;
+        --muted: #B8C8C5; --line: #2A3735; --accent: #4FA6AA; --accent-soft: #17383A;
+        --bar: #2E5F62; --on-accent: #0E1413; --brass: #E2BD6B; --brass-soft: #382D16;
+        --ok: #6BBF8B; --ok-soft: #163323; --warn: #DFAD4E; --warn-soft: #382C13;
+        --bad: #E47B72; --bad-soft: #3B1D1B;
+      }
+    }
+    * { box-sizing: border-box }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 var(--body);
+      padding: 0;
+      margin: 0;
+    }
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+    button {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    h1, h2, h3 {
+      font-family: var(--display);
+      text-wrap: balance;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .num { font-variant-numeric: tabular-nums; }
+    .label {
+      font-size: 11.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .muted { color: var(--muted); }
+    .lead {
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+    .hero h1 {
+      font-size: clamp(32px, 6vw, 48px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero h1 i {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero .sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.5;
+    }
+    .hero-cta {
+      background: var(--accent);
+      color: #FFFFFF;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-cta:hover {
+      background: #0C565E;
+      text-decoration: none;
+    }
+    .hero-trust {
+      margin-top: 40px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .hero-trust strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* Story Section */
+    .story {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 48px 0;
+    }
+    .story h2 {
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+    .story p {
+      margin: 0 0 16px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .story-quote {
+      background: var(--sunk);
+      border-left: 4px solid var(--accent);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-size: 17px;
+      line-height: 1.6;
+      border-radius: 0 8px 8px 0;
+    }
+    .story-numbers {
+      display: grid;
+      gap: 16px;
+      margin: 32px 0 24px;
+    }
+    .story-number {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 16px;
+      background: var(--sunk);
+      border-radius: 8px;
+    }
+    .story-number .val {
+      font-family: var(--display);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .story-number .desc {
+      flex: 1;
+    }
+    .story-number .desc strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* Benefits */
+    .benefits {
+      margin: 56px 0;
+    }
+    .benefits h2 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .benefit-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .benefit-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+    }
+    .benefit-card h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .benefit-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .benefit-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* How It Works */
+    .how {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 56px 0;
+    }
+    .how h2 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .how-steps {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .how-step {
+      text-align: center;
+    }
+    .step-num {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      color: var(--on-accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--display);
+      font-weight: 600;
+      margin: 0 auto 16px;
+    }
+    .how-step h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .how-step p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Musician Objection */
+    .musician {
+      background: var(--sunk);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 56px 0;
+      text-align: center;
+    }
+    .musician h2 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+    .musician p {
+      margin: 0 0 20px;
+      color: var(--muted);
+    }
+    .musician-benefit {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      margin: 4px;
+    }
+    .musician-benefit::before {
+      content: "✓";
+      color: var(--ok);
+      font-weight: 600;
+    }
+
+    /* Price */
+    .price {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 32px;
+      margin: 56px 0;
+      text-align: center;
+    }
+    .price h2 {
+      font-size: 28px;
+      margin-bottom: 32px;
+    }
+    .price-card {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .price-amount {
+      font-family: var(--display);
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .price-period {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .price-features {
+      text-align: left;
+      margin: 24px 0 32px;
+    }
+    .price-feature {
+      display: flex;
+      gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--line);
+      font-size: 15px;
+    }
+    .price-feature:last-child {
+      border-bottom: none;
+    }
+    .price-feature::before {
+      content: "✓";
+      color: var(--ok);
+      font-weight: 600;
+    }
+    .price-cta {
+      background: var(--accent);
+      color: #FFFFFF;
+      padding: 16px 32px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+      display: inline-block;
+      width: 100%;
+      max-width: 320px;
+      text-align: center;
+    }
+    .price-cta:hover {
+      background: #0C565E;
+      text-decoration: none;
+    }
+    .price-anchor {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--muted);
+      background: var(--sunk);
+      padding: 12px 20px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .price-anchor strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .price-guarantee {
+      margin-top: 20px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 56px 0;
+    }
+    .faq h2 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--line);
+      padding: 20px 0;
+    }
+    .faq-item:first-child {
+      padding-top: 0;
+    }
+    .faq-q {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .faq-a {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* Final CTA */
+    .final-cta {
+      text-align: center;
+      padding: 48px 0;
+      border-top: 1px solid var(--line);
+      margin-top: 56px;
+    }
+    .final-cta h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+    .final-cta p {
+      color: var(--muted);
+      margin: 0 0 24px;
+      font-size: 16px;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 28px; }
+      .hero .sub { font-size: 16px; }
+      .story-number {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .story-number .val {
+        font-size: 20px;
+      }
+      .how-steps {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Hero -->
+    <header class="hero">
+      <h1>Descubra quanto <i>sobra</i> de cada casamento que você toca</h1>
+      <p class="sub">Lance o evento, a escala e os custos. O sistema mostra o lucro, a margem e quanto você deve pra cada músico.</p>
+      <a href="#preco" class="hero-cta">
+        Começar agora por R$ 47/mês
+        <span>→</span>
+      </a>
+      <p class="hero-trust">
+        Criado por <strong>Abner Fiorili</strong>, músico e dono de uma central com mais de 100 eventos por ano
+      </p>
+    </header>
+
+    <!-- Story / Pain -->
+    <section class="story">
+      <h2>O casamento que me deu R$ 66 de lucro</h2>
+      <p>Fechei um casamento por R$ 1.400. Trio de músicos, um dia inteiro de trabalho.</p>
+      <p>Quando fui fazer a conta, descobri que tinha sobrado <strong>R$ 66</strong>.</p>
+      <div class="story-quote">
+        Trio: R$ 1.250. Imposto: R$ 84. Sobrou R$ 66.<br>
+        Eu levei três músicos, toquei uma cerimônia inteira e ganhei R$ 66.
+      </div>
+      <p>E o pior: só fui perceber isso <strong>meses depois</strong>, quando sentei pra fazer a conta de verdade.</p>
+      <p>Eu achava que estava fechando bons trabalhos. Na verdade, estava trabalhando de graça.</p>
+
+      <h2 style="font-size: 22px; margin-top: 40px;">Então montei uma planilha</h2>
+      <p>Quis entender de verdade o que estava acontecendo. A planilha me mostrou três coisas que eu não sabia:</p>
+
+      <div class="story-numbers">
+        <div class="story-number">
+          <span class="val">R$ 36 mil</span>
+          <span class="desc">
+            <strong>Faltavam no meu controle</strong>
+            Um mês inteiro ficou fora da conta por erro de fórmula. Eu via R$ 214 mil no ano. O número certo era R$ 251 mil.
+          </span>
+        </div>
+        <div class="story-number">
+          <span class="val">57%</span>
+          <span class="desc">
+            <strong>De tudo que eu faturo vai pro músico</strong>
+            É o maior custo do negócio. E eu fechava orçamento sem saber isso, no chute.
+          </span>
+        </div>
+        <div class="story-number">
+          <span class="val">R$ 2.000</span>
+          <span class="desc">
+            <strong>Abaixo disso, quase não vale a pena</strong>
+            Evento menor de R$ 2.000 tem o custo com músicos passando de 65% do valor.
+          </span>
+        </div>
+      </div>
+
+      <p>A planilha funcionou tão bem que virou um sistema. Hoje eu uso ele pra tocar minha central inteira.</p>
+    </section>
+
+    <!-- Benefits -->
+    <section class="benefits">
+      <h2>O que o sistema faz por você</h2>
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <div class="benefit-icon">📊</div>
+          <h3>Em 2 minutos, sabe o lucro do evento</h3>
+          <p>Lança o evento com valor, custos e escala. O sistema calcula imposto, soma cachês e mostra o lucro sozinho.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">📈</div>
+          <h3>Painel do ano com faturamento e margem</h3>
+          <p>Abre o app e sabe como o ano está indo. Vê quantos eventos, quanto entrou, quanto sobrou.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🚨</div>
+          <h3>Avisa quando a margem ficou ruim</h3>
+          <p>Se o evento deu menos de 10% de lucro, você vê o alerta no mês que aconteceu — não um ano depois.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">🎯</div>
+          <h3>Mostra a partir de quanto vale a pena</h3>
+          <p>Descobre qual faixa de preço traz margem saudável. Solo, duo, trio, quarteto — o sistema mostra o número.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">✓</div>
+          <h3>O músico confirma no celular</h3>
+          <p>Acabou o "você confirma?" no WhatsApp. Ele recebe a escala e confirma com um toque.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">⚠️</div>
+          <h3>Alerta de conflito de horário</h3>
+          <p>Se o músico já tem compromisso naquele dia, você é avisado antes de escalar.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">💰</div>
+          <h3>Sabe exatamente quanto deve pra cada um</h3>
+          <p>Acertos por músico, com quem já pagou e quem ainda está devendo. Marca quando pagou e nunca mais esquece.</p>
+        </div>
+        <div class="benefit-card">
+          <div class="benefit-icon">📅</div>
+          <h3>Controle de recebimento</h3>
+          <p>Sinal e parcelas do cliente, com aviso de parcela vencida. Nunca mais esquece de cobrar.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how">
+      <h2>Como funciona</h2>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="step-num">1</div>
+          <h3>Lance o evento</h3>
+          <p>Valor fechado, local, horário, traje. Em 30 segundos você tem o registro.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">2</div>
+          <h3>Monte a escala</h3>
+          <p>Quem toca, qual instrumento, cachê de cada um. O sistema soma automaticamente.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">3</div>
+          <h3>Veja o lucro</h3>
+          <p>O sistema calcula imposto, custos e músicos. Mostra lucro e margem na hora.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">4</div>
+          <h3>Pronto</h3>
+          <p>O músico recebe a escala no celular, confirma, e você para de mandar mensagem.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Musician Objection -->
+    <section class="musician">
+      <h2>E os meus músicos?</h2>
+      <p>Cada músico tem a própria conta. Eles veem só o que interessa pra eles:</p>
+      <div>
+        <span class="musician-benefit">Data e horário do evento</span>
+        <span class="musician-benefit">Local e traje</span>
+        <span class="musician-benefit">Cachê dele</span>
+        <span class="musician-benefit">Quem mais está escalado</span>
+        <span class="musician-benefit">Confirma com um toque</span>
+      </div>
+      <p style="margin-top: 20px; font-size: 14px;">
+        <strong>Importante:</strong> o músico NÃO vê quanto o evento custou pro cliente, nem o seu lucro. Isso mata a objeção antes dela aparecer.
+      </p>
+    </section>
+
+    <!-- Price -->
+    <section class="price" id="preco">
+      <h2>Comece hoje</h2>
+      <div class="price-card">
+        <div class="price-amount">R$ 47</div>
+        <div class="price-period">por mês, sem fidelidade</div>
+
+        <div class="price-features">
+          <div class="price-feature">Gerenciamento de eventos ilimitado</div>
+          <div class="price-feature">Escala com confirmação dos músicos</div>
+          <div class="price-feature">Painel de faturamento e lucro</div>
+          <div class="price-feature">Acertos por músico</div>
+          <div class="price-feature">Alertas de margem baixa e conflito</div>
+          <div class="price-feature">Músicos entram de graça, sem limite</div>
+          <div class="price-feature">Acesso imediato após o pagamento</div>
+        </div>
+
+        <a href="#" class="price-cta">Começar agora por R$ 47/mês</a>
+
+        <div class="price-guarantee">7 dias de garantia — se não servir, pede o reembolso.</div>
+
+        <div class="price-anchor">
+          R$ 47 por mês é menos do que você perde em <strong>um único evento fechado abaixo do preço</strong>.
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+      <h2>Perguntas frequentes</h2>
+      <div class="faq-item">
+        <div class="faq-q">Minha planilha já resolve isso?</div>
+        <p class="faq-a">A planilha do Abner também resolvia. Até esconder R$ 36 mil. Toda vez que entra mês novo, a fórmula precisa ser refeita — e é aí que quebra.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Não tenho tempo de aprender um sistema?</div>
+        <p class="faq-a">Lançar um evento leva 2 minutos: valor, local, quem toca, quanto cada um ganha. O resto o sistema calcula.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">R$ 47 por mês é caro?</div>
+        <p class="faq-a">É menos do que você perde em um evento fechado abaixo do preço. Um evento ruim por ano já paga a assinatura inteira.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Meus músicos não vão usar?</div>
+        <p class="faq-a">Eles não precisam instalar nada. Recebem um link no WhatsApp e confirmam com um toque. E não pagam nada.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Não quero que os músicos vejam meus valores?</div>
+        <p class="faq-a">Eles não veem. O músico enxerga só a data, o local, o traje e o cachê dele. Nunca o valor do evento nem o seu lucro.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">E se eu quiser sair?</div>
+        <p class="faq-a">Cancela quando quiser, sem multa. E tem 7 dias de garantia.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Serve pro meu caso? Eu faço mais evento de empresa.</div>
+        <p class="faq-a">Serve. O sistema não pergunta que tipo de evento é — ele calcula valor menos custos. Funciona igual pra casamento, formatura, evento corporativo ou missa.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Precisa instalar algo?</div>
+        <p class="faq-a">Não. Roda no navegador, no celular ou no computador. Só precisa de internet.</p>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+      <h2>Descubra quanto você ganha de verdade</h2>
+      <p>Lance o evento, a escala e os custos. O sistema mostra o lucro, a margem e quanto você deve pra cada músico.</p>
+      <a href="#preco" class="hero-cta">
+        Começar agora por R$ 47/mês
+        <span>→</span>
+      </a>
+    </section>
+  </div>
+</body>
+</html>

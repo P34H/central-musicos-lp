@@ -1,0 +1,473 @@
+<title>Central de Músicos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F3F5F4;--surface:#FFFFFF;--sunk:#E8EDEB;--ink:#152120;--muted:#4A5957;--line:#D8DFDD;
+  --accent:#0E5A61;--accent-soft:#D5E7E7;--bar:#9CC6C8;--on-accent:#FFFFFF;
+  --brass:#7A5812;--brass-soft:#F1E5CB;
+  --ok:#2A7549;--ok-soft:#DAEEE1;--warn:#94640F;--warn-soft:#F5E9CD;--bad:#AA3434;--bad-soft:#F5DDDB;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1413;--surface:#152020;--sunk:#1C2827;--ink:#E3EBE9;--muted:#93A3A0;--line:#2A3735;
+  --accent:#62B4B9;--accent-soft:#17383A;--bar:#2E5F62;--on-accent:#0E1413;
+  --brass:#E2BD6B;--brass-soft:#382D16;
+  --ok:#6BBF8B;--ok-soft:#163323;--warn:#DFAD4E;--warn-soft:#382C13;--bad:#E47B72;--bad-soft:#3B1D1B;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1413;--surface:#152020;--sunk:#1C2827;--ink:#E3EBE9;--muted:#93A3A0;--line:#2A3735;
+  --accent:#62B4B9;--accent-soft:#17383A;--bar:#2E5F62;--on-accent:#0E1413;
+  --brass:#E2BD6B;--brass-soft:#382D16;
+  --ok:#6BBF8B;--ok-soft:#163323;--warn:#DFAD4E;--warn-soft:#382C13;--bad:#E47B72;--bad-soft:#3B1D1B;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);padding-inline:16px;margin:0}
+.wrap{max-width:1140px;margin:0 auto;padding-block:18px 56px;display:grid;gap:18px}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+.label{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;justify-content:space-between}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.brand b{font-family:var(--display);font-size:24px;font-weight:700;letter-spacing:-.02em}
+.brand b i{font-style:normal;color:var(--brass)}
+.proto{font-size:12px;color:var(--brass);background:var(--brass-soft);padding:2px 9px;border-radius:999px;font-weight:600}
+.seg{display:inline-flex;background:var(--sunk);border-radius:999px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--muted);padding:7px 16px;border-radius:999px;font-weight:500;font-size:14px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0/.12)}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs button{border:0;background:none;padding:8px 0 10px;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button[aria-current="page"]{color:var(--ink);border-color:var(--accent)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px}
+.panel h2{font-size:17px;margin-bottom:12px}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:6px 16px}
+.head h1{font-size:28px}
+.panel .head h2{margin-bottom:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));padding:0;overflow:hidden}
+.kpis>div{padding:16px 18px;border-right:1px solid var(--line);display:grid;gap:2px}
+.kpis>div:last-child{border-right:0}
+.kpis strong{font-family:var(--display);font-size:27px;font-weight:600;line-height:1.15}
+.kpis small{font-size:12.5px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:16px;align-items:start}
+.stackcol{display:grid;gap:16px}
+@media (max-width:880px){.grid2{grid-template-columns:1fr}.kpis>div{border-right:0;border-bottom:1px solid var(--line)}}
+.bars{display:grid;gap:7px}
+.bar-row{display:grid;grid-template-columns:34px 1fr 118px;align-items:center;gap:10px;font-size:13px}
+.track{position:relative;height:20px;background:var(--sunk);border-radius:4px}
+.fat,.luc{position:absolute;left:0}
+.fat{top:0;bottom:0;background:var(--bar);border-radius:4px}
+.luc{top:5px;bottom:5px;background:var(--accent);border-radius:2px}
+.future .fat{opacity:.55}
+.bar-row .v{text-align:right;line-height:1.2}
+.bar-row .v span{display:block;font-size:11.5px;color:var(--muted)}
+.bar-row.now>span:first-child{color:var(--brass);font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted);margin-top:12px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.stack{display:flex;height:26px;border-radius:6px;overflow:hidden;margin-bottom:12px}
+.split{display:grid;gap:6px}
+.split div{display:grid;grid-template-columns:1fr auto 86px;gap:10px;font-size:13.5px}
+.split div span:nth-child(2),.split div span:last-child{text-align:right}
+.alerts{list-style:none;margin:0;padding:0;display:grid}
+.alerts li button{width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:10px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:center}
+.alerts li:first-child button{border-top:0;padding-top:0}
+.alerts em{font-style:normal;grid-column:2;font-size:12.5px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.ok{background:var(--ok-soft);color:var(--ok)}.warn{background:var(--warn-soft);color:var(--warn)}
+.bad{background:var(--bad-soft);color:var(--bad)}.neutral{background:var(--sunk);color:var(--muted)}
+.acc{background:var(--accent-soft);color:var(--accent)}
+.neg{color:var(--bad)}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;text-align:left;padding:0 10px 8px 0;white-space:nowrap}
+td{padding:9px 10px 9px 0;border-top:1px solid var(--line);white-space:nowrap}
+td.r,th.r{text-align:right}
+.insight{margin:12px 0 0;font-size:13.5px}
+.agenda{display:grid;grid-template-columns:minmax(280px,370px) 1fr;gap:16px;align-items:start}
+@media (max-width:880px){.agenda{grid-template-columns:1fr}}
+.evlist{padding:0;overflow:hidden}
+.ev{width:100%;display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:11px 14px}
+.ev:first-child{border-top:0}
+.ev[aria-current="true"]{background:var(--accent-soft)}
+.day{display:grid;justify-items:center;line-height:1}
+.day b{font-family:var(--display);font-size:22px;font-weight:600}
+.day small{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:3px}
+.ev .t{font-weight:600;display:block}
+.ev .m{font-size:12.5px;color:var(--muted)}
+.ev .r{text-align:right;display:grid;gap:3px;justify-items:end;font-size:13px}
+.detail{display:grid;gap:16px;min-width:0}
+.detail h1{font-size:26px}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;color:var(--muted);margin-top:6px}
+.meta b{color:var(--ink);font-weight:500}
+.rows>div{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px 12px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.rows>div.total{border-bottom:0;padding-top:10px;font-weight:600}
+.rows>div.total>span:last-child{font-family:var(--display);font-size:22px}
+.rows small{color:var(--muted);font-size:12px;font-weight:400}
+.esc>div{display:grid;grid-template-columns:1fr auto auto;gap:4px 14px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.esc>div:first-child{border-top:0}
+.note{grid-column:1/-1;font-size:12.5px;color:var(--bad);background:var(--bad-soft);padding:6px 9px;border-radius:6px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.btn{border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);padding:8px 14px;border-radius:8px;font-weight:600;font-size:14px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.sm{padding:5px 11px;font-size:13px}
+.phone{max-width:580px;width:100%;margin:0 auto;display:grid;gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);padding:0;overflow:hidden}
+.mini>div{padding:14px;border-right:1px solid var(--line);display:grid;gap:2px}
+.mini>div:last-child{border-right:0}
+.mini strong{font-family:var(--display);font-size:20px;font-weight:600}
+@media (max-width:460px){.mini{grid-template-columns:1fr}.mini>div{border-right:0;border-bottom:1px solid var(--line)}}
+.gig{padding:14px 0;border-top:1px solid var(--line);display:grid;gap:6px}
+.gig:first-of-type{border-top:0;padding-top:0}
+.gig .c{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--brass)}
+.gig .line{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.gig h3{font-size:17px}
+.gig .actions{margin-top:4px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px}
+.form-field{display:grid;gap:4px}
+.form-field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.form-field input,.form-field select{padding:8px 10px;border:1px solid var(--line);border-radius:6px;font:inherit;background:var(--surface);color:var(--ink)}
+.form-field input:focus,.form-field select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.form-field .hint{font-size:11px;color:var(--muted)}
+.calc-preview{background:var(--sunk);border-radius:8px;padding:14px;margin-top:12px}
+.calc-preview h3{font-size:14px;margin-bottom:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.calc-row{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
+.calc-row.total{border-top:1px solid var(--line);margin-top:6px;padding-top:8px;font-weight:600;font-size:16px}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:14px;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgb(0 0 0/.2)}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><b>central<i>.</i></b><span class="proto">Protótipo · dados fictícios</span></div>
+    <div class="seg" role="group" aria-label="Ver como">
+      <button id="role-dono" aria-pressed="true" data-role="dono">Dono da central</button>
+      <button id="role-musico" aria-pressed="false" data-role="musico">Músico</button>
+    </div>
+  </header>
+  <nav class="tabs" id="nav" aria-label="Seções"></nav>
+  <main id="app"></main>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+const R0=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
+const R2=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+const brl=(v,d)=>(d?R2:R0).format(v);
+const pct=v=>(v*100).toFixed(1).replace('.',',')+'%';
+const ALIQ=0.06;
+
+// escala: [músico, instrumento, cachê, status ok|pend|rec, conflito]
+const EV=[
+ {id:1,d:'05/09',dow:'sáb',t:'Brunna & Caio',loc:'Chácara Recanto Sollare',jan:'15h30/16h',traje:'Preto',st:'realizado',pago:true,bruto:2900,custos:{'Comissão':0,'Fotógrafo':350},
+  esc:[['Rafael Nunes','violino',400,'ok'],['Tainá Rocha','flauta',400,'ok'],['Gustavo Lima','octapad',400,'ok'],['Júlio Prado','piano + som',800,'ok']],
+  rec:[['Sinal 30%',870,'10/07','pago'],['Saldo',2030,'01/09','pago']]},
+ {id:2,d:'06/09',dow:'dom',t:'Marina & Otávio',loc:'Espaço Villa Bella',jan:'11h30/12h',traje:'Azul-marinho',st:'realizado',bruto:5200,custos:{'Comissão':0,'Fotógrafo':500},
+  esc:[['Rafael Nunes','violino',400,'ok'],['Helena Duarte','violoncelo',400,'ok'],['Diego Salles','sax',450,'ok'],['Breno Castro','teclas + som',950,'ok'],['Lívia Moura','voz',700,'ok']],
+  rec:[['Sinal 30%',1560,'02/06','pago'],['Parcela 2',1820,'20/08','pago'],['Saldo',1820,'05/09','pago']]},
+ {id:3,d:'12/09',dow:'sáb',t:'Simone & Leo',loc:'Restaurante Le Jardin',jan:'19h/19h30',traje:'Preto',st:'confirmado',bruto:1400,custos:{'Comissão':0,'Fotógrafo':0},
+  esc:[['Rafael Nunes','violino',400,'ok'],['Helena Duarte','violoncelo',400,'ok'],['Nilo Ramos','acordeon',450,'ok']],
+  rec:[['Sinal 50%',700,'15/08','pago'],['Saldo',700,'11/09','aberto']]},
+ {id:4,d:'13/09',dow:'dom',t:'Corrida Viva Arujá',loc:'Parque Municipal',jan:'07h',traje:'Camiseta do evento',st:'confirmado',bruto:0,custos:{'Comissão':0,'Fotógrafo':0},
+  esc:[['Lívia Moura','voz',200,'ok'],['Diego Salles','sax',200,'ok'],['Gustavo Lima','bateria',200,'ok'],['Breno Castro','teclas',200,'ok'],['Tainá Rocha','flauta',200,'ok']],rec:[]},
+ {id:5,d:'19/09',dow:'sáb',t:'Karine & Pedro',loc:'Casa Helenya',jan:'09h30/10h',traje:'Branco e bege',st:'confirmado',bruto:3060,custos:{'Comissão':150,'Fotógrafo':0},
+  esc:[['Rafael Nunes','violino',400,'ok'],['Tainá Rocha','flauta',400,'ok'],['Diego Salles','sax',400,'ok'],['Gustavo Lima','octapad',400,'ok'],['Anderson Reis','sonorização',550,'ok']],
+  rec:[['Sinal 30%',918,'12/06','pago'],['Parcela 2',1200,'29/08','vencido'],['Saldo',942,'18/09','aberto']]},
+ {id:6,d:'20/09',dow:'dom',t:'Flávio & Ana',loc:'Villa Giordano',jan:'11h às 13h',traje:'Preto',st:'confirmado',bruto:2000,custos:{'Comissão':0,'Fotógrafo':0},
+  esc:[['Lívia Moura','voz',350,'ok'],['Diego Salles','sax',350,'pend'],['Breno Castro','teclado',400,'pend']],
+  rec:[['Sinal 50%',1000,'01/08','pago'],['Saldo',1000,'19/09','aberto']]},
+ {id:7,d:'26/09',dow:'sáb',t:'Ingridy & Tomás',loc:'Igreja São José',jan:'17h',traje:'Preto',st:'confirmado',bruto:3260,custos:{'Comissão':0,'Fotógrafo':350},
+  esc:[['Rafael Nunes','violino',400,'ok'],['Tainá Rocha','flauta',400,'pend',true],['Gustavo Lima','octapad',400,'ok']],
+  rec:[['Sinal 30%',978,'20/07','pago'],['Saldo',2282,'25/09','aberto']]},
+ {id:8,d:'27/09',dow:'dom',t:'Edson & Carla',loc:'Espaço Nova Primavera',jan:'14h/15h',traje:'Cinza',st:'confirmado',bruto:2435,custos:{'Comissão':0,'Fotógrafo':350},
+  esc:[['Rafael Nunes','violino',400,'pend',true],['Helena Duarte','violoncelo',400,'ok']],
+  rec:[['Sinal 30%',730,'30/08','pago'],['Saldo',1705,'26/09','aberto']]}
+];
+const HARMONIA=[
+ {d:'13/09',dow:'dom',t:'Bodas de Ouro Lúcia & Arnaldo',loc:'Salão Paroquial São Bento',jan:'19h/20h',traje:'Social escuro',inst:'violino',cache:500,colegas:'Marcos (piano)'},
+ {d:'27/09',dow:'dom',t:'Bianca & Luan',loc:'Sítio Vale das Águas',jan:'14h30/15h',traje:'Preto',inst:'violino',cache:450,colegas:'Otávio (violão), Jhully (voz)'}
+];
+const MONTHS=[['Jan',6,8240,1910],['Fev',5,13150,2780],['Mar',10,22380,4620],['Abr',10,18310,1090],['Mai',8,19870,3540],['Jun',8,12940,3120],['Jul',8,16820,2870],['Ago',9,21260,5790]];
+const LATER=[['Out',14,41640,9210],['Nov',12,33920,10780]];
+const FAIXAS=[['Até R$ 1.000',9,-.061,.88],['R$ 1.000 a 2.000',21,.118,.66],['R$ 2.000 a 3.000',38,.212,.55],['R$ 3.000 a 5.000',22,.271,.52],['Acima de R$ 5.000',8,.238,.60]];
+
+const S={role:'dono',tab:'painel',sel:3,paidNow:{}};
+const app=document.getElementById('app'),nav=document.getElementById('nav');
+
+function calc(e){
+  const imp=e.bruto*ALIQ, custos=Object.values(e.custos).reduce((a,b)=>a+b,0);
+  const mus=e.esc.filter(s=>s[3]!=='rec').reduce((a,s)=>a+s[2],0);
+  const lucro=e.bruto-imp-custos-mus;
+  const tipo=e.bruto>0?'Comercial':(custos+mus>0?'Cortesia/Investimento':'Sem lançamento');
+  return {imp,custos,mus,lucro,margem:e.bruto?lucro/e.bruto:0,pm:e.bruto?mus/e.bruto:0,tipo};
+}
+const stPill=s=>({ok:'<span class="pill ok">Confirmado</span>',pend:'<span class="pill warn">Aguardando</span>',rec:'<span class="pill bad">Recusou</span>'}[s]);
+const recPill=s=>({pago:'<span class="pill ok">Recebido</span>',aberto:'<span class="pill neutral">A receber</span>',vencido:'<span class="pill bad">Vencido</span>'}[s]);
+const money=(v,d)=>`<span class="num${v<0?' neg':''}">${v<0?'−':''}${brl(Math.abs(v),d)}</span>`;
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>{t.hidden=true},2800);}
+
+function renderNav(){
+  if(S.role==='musico'){nav.innerHTML='<button aria-current="page">Minha agenda</button>';return;}
+  nav.innerHTML=[['painel','Painel'],['agenda','Agenda'],['acertos','Acertos com músicos'],['novo','+ Novo Evento']]
+    .map(([k,l])=>`<button data-tab="${k}" ${S.tab===k?'aria-current="page"':''}>${l}</button>`).join('');
+}
+
+function setembro(){
+  let fat=0,luc=0;EV.forEach(e=>{fat+=e.bruto;luc+=calc(e).lucro});
+  return ['Set',EV.length,fat,luc];
+}
+
+function painel(){
+  const months=[...MONTHS,setembro(),...LATER];
+  const ev=months.reduce((a,m)=>a+m[1],0), fat=months.reduce((a,m)=>a+m[2],0), luc=months.reduce((a,m)=>a+m[3],0);
+  const max=Math.max(...months.map(m=>m[2]));
+  const split=[['Músicos',.57,'var(--accent)'],['Fotógrafo',.11,'var(--brass)'],['Impostos',.06,'var(--muted)'],['Comissão',.03,'var(--bar)'],['Lucro líquido',luc/fat,'var(--ok)']];
+  return `
+  <div class="head"><h1>Painel 2026</h1><span class="muted">Central Allegro · atualizado agora</span></div>
+  <section class="panel kpis" aria-label="Resumo do ano">
+    <div><span class="label">Eventos no ano</span><strong class="num">${ev}</strong><small>Out e Nov já contratados</small></div>
+    <div><span class="label">Faturamento</span><strong class="num">${brl(fat)}</strong><small>Confirmados + realizados</small></div>
+    <div><span class="label">Lucro</span><strong class="num">${brl(luc)}</strong><small>Depois de músicos e custos</small></div>
+    <div><span class="label">Margem</span><strong class="num">${pct(luc/fat)}</strong><small>Meta sugerida: 25%</small></div>
+    <div><span class="label">Ticket médio</span><strong class="num">${brl(fat/ev)}</strong><small>Por evento</small></div>
+  </section>
+  <div class="grid2">
+    <section class="panel">
+      <h2>Mês a mês</h2>
+      <div class="bars">${months.map((m,i)=>`
+        <div class="bar-row ${i>8?'future':''} ${i===8?'now':''}">
+          <span>${m[0]}</span>
+          <div class="track" title="${m[1]} eventos"><div class="fat" style="width:${m[2]/max*100}%"></div><div class="luc" style="width:${Math.max(m[3],0)/max*100}%"></div></div>
+          <div class="v num">${brl(m[2])}<span>lucro ${brl(m[3])}</span></div>
+        </div>`).join('')}</div>
+      <div class="legend"><span><i class="sw" style="background:var(--bar)"></i>Faturamento</span><span><i class="sw" style="background:var(--accent)"></i>Lucro</span><span>Barras claras: meses já contratados</span></div>
+    </section>
+    <div class="stackcol">
+      <section class="panel">
+        <h2>Precisa de atenção</h2>
+        <ul class="alerts">
+          <li><button data-go="3"><span class="pill bad">Margem 4,7%</span>12/09 Simone &amp; Leo<em>Trio custa 89% do valor fechado</em></button></li>
+          <li><button data-go="5"><span class="pill bad">Vencido</span>19/09 Karine &amp; Pedro<em>Parcela de R$ 1.200 venceu em 29/08</em></button></li>
+          <li><button data-go="7"><span class="pill bad">Conflito</span>26/09 Ingridy &amp; Tomás<em>Tainá Rocha tem outro compromisso no horário</em></button></li>
+          <li><button data-go="6"><span class="pill warn">2 de 3 sem resposta</span>20/09 Flávio &amp; Ana<em>Escala enviada há 4 dias</em></button></li>
+        </ul>
+      </section>
+      <section class="panel">
+        <h2>Para onde vai o faturamento</h2>
+        <div class="stack" role="img" aria-label="Divisão do faturamento">${split.map(s=>`<div style="width:${s[1]*100}%;background:${s[2]}"></div>`).join('')}</div>
+        <div class="split">${split.map(s=>`<div><span><i class="sw" style="background:${s[2]}"></i>${s[0]}</span><span class="num muted">${pct(s[1])}</span><span class="num">${brl(fat*s[1])}</span></div>`).join('')}</div>
+      </section>
+    </div>
+  </div>
+  <section class="panel">
+    <h2>Margem por faixa de preço</h2>
+    <div class="tblwrap"><table><thead><tr><th>Faixa</th><th class="r">Eventos</th><th class="r">Margem</th><th class="r">% músicos</th><th></th></tr></thead><tbody>
+    ${FAIXAS.map(f=>`<tr><td>${f[0]}</td><td class="r num">${f[1]}</td><td class="r num ${f[2]<0?'neg':''}">${pct(f[2])}</td><td class="r num">${pct(f[3])}</td><td>${f[2]<.1?'<span class="pill bad">Não se paga</span>':f[2]<.2?'<span class="pill warn">Apertado</span>':'<span class="pill ok">Saudável</span>'}</td></tr>`).join('')}
+    </tbody></table></div>
+    <p class="insight muted">Abaixo de R$ 2.000 o custo com músicos passa de 65% do valor. Esse é o piso de orçamento.</p>
+  </section>`;
+}
+
+function agenda(){
+  const e=EV.find(x=>x.id===S.sel)||EV[0], c=calc(e);
+  const fat=EV.reduce((a,x)=>a+x.bruto,0), luc=EV.reduce((a,x)=>a+calc(x).lucro,0);
+  const recebido=e.rec.filter(r=>r[3]==='pago').reduce((a,r)=>a+r[1],0);
+  const conf=e.esc.filter(s=>s[3]==='ok').length;
+  return `
+  <div class="head"><h1>Setembro 2026</h1><span class="muted num">${EV.length} eventos · ${brl(fat)} · lucro ${brl(luc)} · 3 orçamentos em aberto</span></div>
+  <div class="agenda">
+    <section class="panel evlist" aria-label="Eventos do mês">${EV.map(x=>{const k=calc(x),ok=x.esc.filter(s=>s[3]==='ok').length;return `
+      <button class="ev" data-sel="${x.id}" aria-current="${x.id===e.id}">
+        <span class="day"><b class="num">${x.d.slice(0,2)}</b><small>${x.dow}</small></span>
+        <span><span class="t">${x.t}</span><span class="m">${x.loc} · ${x.jan}</span></span>
+        <span class="r">${money(k.lucro)}<span class="pill ${ok===x.esc.length?'ok':'warn'} num">${ok}/${x.esc.length} músicos</span></span>
+      </button>`}).join('')}
+    </section>
+    <div class="detail">
+      <section class="panel">
+        <div class="head"><h1>${e.d} ${e.t}</h1><span>${e.st==='realizado'?'<span class="pill neutral">Realizado</span>':'<span class="pill acc">Confirmado</span>'} <span class="pill ${c.tipo==='Comercial'?'neutral':'warn'}">${c.tipo}</span></span></div>
+        <div class="meta"><span>Local <b>${e.loc}</b></span><span>Horário <b>${e.jan}</b></span><span>Traje <b>${e.traje}</b></span></div>
+      </section>
+      <div class="grid2">
+        <section class="panel">
+          <h2>Financeiro do evento</h2>
+          <div class="rows">
+            <div><span>Valor fechado</span>${money(e.bruto,1)}</div>
+            <div><span>Imposto <small>6%</small></span>${money(-c.imp,1)}</div>
+            ${Object.entries(e.custos).map(([k,v])=>`<div><span>${k}</span>${money(-v,1)}</div>`).join('')}
+            <div><span>Músicos <small>soma da escala</small></span>${money(-c.mus,1)}</div>
+            <div class="total"><span>Lucro <small class="num">margem ${pct(c.margem)} · músicos ${pct(c.pm)}</small></span>${money(c.lucro,1)}</div>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Recebimentos</h2>
+          ${e.rec.length?`<div class="rows">${e.rec.map(r=>`<div><span>${r[0]} <small>vence ${r[2]}</small></span><span>${money(r[1],1)} ${recPill(r[3])}</span></div>`).join('')}
+          <div class="total"><span>Falta receber</span>${money(e.bruto-recebido,1)}</div></div>`:'<p class="muted">Evento sem cobrança (cortesia).</p>'}
+        </section>
+      </div>
+      <section class="panel">
+        <div class="head"><h2>Escala</h2><span class="muted num">${conf} de ${e.esc.length} confirmados</span></div>
+        <div class="esc">${e.esc.map(s=>`<div><span><b>${s[0]}</b> <span class="muted">· ${s[1]}</span></span><span class="num">${brl(s[2])}</span>${stPill(s[3])}${s[4]&&s[3]!=='rec'?'<span class="note">Já tem compromisso neste horário em outra central. Os detalhes não são exibidos.</span>':''}</div>`).join('')}</div>
+        <div class="actions"><button class="btn" data-act="whats">Enviar escala no WhatsApp</button><button class="btn ghost" data-act="add">Adicionar músico</button></div>
+      </section>
+    </div>
+  </div>`;
+}
+
+function acertos(){
+  const m={};
+  EV.forEach(e=>e.esc.forEach(s=>{
+    if(s[3]!=='ok')return;
+    const r=m[s[0]]||(m[s[0]]={inst:new Set(),n:0,pago:0,apagar:0,prev:0});
+    r.inst.add(s[1]);r.n++;
+    if(e.pago)r.pago+=s[2];else if(e.st==='realizado')r.apagar+=s[2];else r.prev+=s[2];
+  }));
+  Object.keys(S.paidNow).forEach(k=>{if(m[k]){m[k].pago+=m[k].apagar;m[k].apagar=0}});
+  const rows=Object.entries(m).sort((a,b)=>b[1].apagar-a[1].apagar);
+  const tot=rows.reduce((a,[,r])=>a+r.apagar,0);
+  return `
+  <div class="head"><h1>Acertos · Setembro</h1><span class="muted num">A pagar agora ${brl(tot)} · só entram escalas confirmadas</span></div>
+  <section class="panel"><div class="tblwrap"><table>
+    <thead><tr><th>Músico</th><th>Instrumentos</th><th class="r">Eventos</th><th class="r">Já pago</th><th class="r">A pagar</th><th class="r">Próximos</th><th></th></tr></thead>
+    <tbody>${rows.map(([n,r])=>`<tr><td><b>${n}</b></td><td class="muted">${[...r.inst].join(', ')}</td><td class="r num">${r.n}</td><td class="r num">${brl(r.pago)}</td><td class="r num">${r.apagar?`<b>${brl(r.apagar)}</b>`:'—'}</td><td class="r num muted">${brl(r.prev)}</td>
+      <td>${r.apagar?`<button class="btn sm" data-pay="${n}" data-v="${r.apagar}">Registrar pagamento</button>`:'<span class="pill ok">Em dia</span>'}</td></tr>`).join('')}</tbody>
+  </table></div></section>`;
+}
+
+function musico(){
+  const me='Rafael Nunes', gigs=[];
+  EV.forEach(e=>e.esc.forEach((s,i)=>{if(s[0]===me)gigs.push({central:'Central Allegro',d:e.d,dow:e.dow,t:e.t,loc:e.loc,jan:e.jan,traje:e.traje,inst:s[1],cache:s[2],st:s[3],conf:s[4],st2:e.st,pago:e.pago,
+    colegas:e.esc.filter(o=>o[0]!==me&&o[3]!=='rec').map(o=>`${o[0].split(' ')[0]} (${o[1]})`).join(', '),ref:e.id+','+i})}));
+  HARMONIA.forEach(h=>gigs.push({central:'Harmonia Eventos',...h,st:'ok'}));
+  gigs.sort((a,b)=>+a.d.slice(0,2)-+b.d.slice(0,2));
+  const recebido=gigs.filter(g=>g.pago).reduce((a,g)=>a+g.cache,0);
+  const acerto=gigs.filter(g=>g.st2==='realizado'&&!g.pago).reduce((a,g)=>a+g.cache,0);
+  const prev=gigs.filter(g=>g.st==='ok'&&g.st2!=='realizado').reduce((a,g)=>a+g.cache,0);
+  const prox=gigs.filter(g=>g.st2!=='realizado');
+  return `<div class="phone">
+    <div><h1 style="font-size:28px">Olá, Rafael</h1><div class="chips"><span class="pill acc">Central Allegro</span><span class="pill acc">Harmonia Eventos</span></div></div>
+    <section class="panel mini" aria-label="Meus cachês em setembro">
+      <div><span class="label">Recebido</span><strong class="num">${brl(recebido)}</strong></div>
+      <div><span class="label">Aguardando acerto</span><strong class="num">${brl(acerto)}</strong></div>
+      <div><span class="label">Previsto</span><strong class="num">${brl(prev)}</strong></div>
+    </section>
+    <section class="panel">
+      <h2>Próximas escalas</h2>
+      ${prox.map(g=>`<div class="gig">
+        <span class="c">${g.central}</span>
+        <div class="line"><h3>${g.dow} ${g.d} · ${g.t}</h3><span class="num">${brl(g.cache)}</span></div>
+        <span class="muted">${g.jan} · ${g.loc} · ${g.inst} · traje ${g.traje.toLowerCase()}</span>
+        <span class="muted" style="font-size:13px">Com ${g.colegas}</span>
+        ${g.conf&&g.st==='pend'?'<span class="note">Conflito: você já confirmou 27/09 às 14h30 na Harmonia Eventos.</span>':''}
+        <div>${g.st==='pend'&&g.ref?`<span class="actions"><button class="btn sm" data-resp="ok" data-ref="${g.ref}">Confirmar presença</button><button class="btn sm ghost" data-resp="rec" data-ref="${g.ref}">Recusar</button></span>`:stPill(g.st)}</div>
+      </div>`).join('')}
+    </section>
+    <p class="muted" style="font-size:13px;margin:0">Você vê só o seu cachê. Valor do evento e lucro da central não aparecem aqui.</p>
+  </div>`;
+}
+
+function novoEvento(){
+  return `
+  <div class="head"><h1>Novo Evento</h1><span class="muted">Preencha os campos — as fórmulas calculam automaticamente</span></div>
+  <section class="panel">
+    <div class="form-grid">
+      <div class="form-field"><label>Data</label><input type="date" id="f-data" value="2026-09-15"></div>
+      <div class="form-field"><label>Cliente / Evento</label><input type="text" id="f-cliente" placeholder="Ex: Casamento Ana & Pedro"></div>
+      <div class="form-field"><label>Local</label><input type="text" id="f-local" placeholder="Ex: Chácara Recanto Sollare"></div>
+      <div class="form-field"><label>Horário</label><input type="text" id="f-horario" placeholder="Ex: 15h30/16h"></div>
+    </div>
+    <h2 style="font-size:15px;margin:18px 0 12px">Financeiro (inputs da planilha)</h2>
+    <div class="form-grid">
+      <div class="form-field"><label>Bruto (R$)</label><input type="number" id="f-bruto" value="2500" min="0" step="50"><span class="hint">Valor fechado com o cliente</span></div>
+      <div class="form-field"><label>Comissão (R$)</label><input type="number" id="f-comissao" value="0" min="0" step="10"><span class="hint">Se houver intermediário</span></div>
+      <div class="form-field"><label>Fotógrafo (R$)</label><input type="number" id="f-fotografo" value="350" min="0" step="50"><span class="hint">Custo do fotógrafo</span></div>
+      <div class="form-field"><label>Imposto (%)</label><input type="number" id="f-imposto-pct" value="6" min="0" max="100" step="0.5" readonly><span class="hint">Fixo em 6% (configurável nas configurações)</span></div>
+    </div>
+    <h2 style="font-size:15px;margin:18px 0 12px">Escala de músicos</h2>
+    <div id="escala-lista" style="display:grid;gap:8px;margin-bottom:12px">
+      <div class="esc-row" style="display:grid;grid-template-columns:1fr 140px 100px auto;gap:8px;align-items:center">
+        <input type="text" placeholder="Nome do músico" class="esc-nome" value="Rafael Nunes">
+        <input type="text" placeholder="Instrumento" class="esc-inst" value="violino">
+        <input type="number" placeholder="Cachê" class="esc-cache" value="400" min="0" step="50">
+        <button class="btn sm ghost" data-remove-esc="0">×</button>
+      </div>
+      <div class="esc-row" style="display:grid;grid-template-columns:1fr 140px 100px auto;gap:8px;align-items:center">
+        <input type="text" placeholder="Nome do músico" class="esc-nome" value="Tainá Rocha">
+        <input type="text" placeholder="Instrumento" class="esc-inst" value="flauta">
+        <input type="number" placeholder="Cachê" class="esc-cache" value="400" min="0" step="50">
+        <button class="btn sm ghost" data-remove-esc="1">×</button>
+      </div>
+      <div class="esc-row" style="display:grid;grid-template-columns:1fr 140px 100px auto;gap:8px;align-items:center">
+        <input type="text" placeholder="Nome do músico" class="esc-nome" value="Gustavo Lima">
+        <input type="text" placeholder="Instrumento" class="esc-inst" value="octapad">
+        <input type="number" placeholder="Cachê" class="esc-cache" value="400" min="0" step="50">
+        <button class="btn sm ghost" data-remove-esc="2">×</button>
+      </div>
+    </div>
+    <button class="btn sm ghost" id="add-musico">+ Adicionar músico</button>
+    <div class="calc-preview" id="calc-preview">
+      <h3>Cálculo automático (fórmulas da planilha)</h3>
+      <div class="calc-row"><span>Bruto</span><span class="num" id="c-bruto">R$ 2.500</span></div>
+      <div class="calc-row"><span>Imposto (6%)</span><span class="num" id="c-imposto">−R$ 150,00</span></div>
+      <div class="calc-row"><span>Comissão</span><span class="num" id="c-comissao">−R$ 0,00</span></div>
+      <div class="calc-row"><span>Fotógrafo</span><span class="num" id="c-fotografo">−R$ 350,00</span></div>
+      <div class="calc-row"><span>Músicos (soma da escala)</span><span class="num" id="c-musicos">−R$ 1.200,00</span></div>
+      <div class="calc-row total"><span>Lucro</span><span class="num" id="c-lucro">R$ 800,00</span></div>
+      <div class="calc-row"><span>Margem</span><span class="num" id="c-margem">32,0%</span></div>
+      <div class="calc-row"><span>% Músicos</span><span class="num" id="c-pm">48,0%</span></div>
+    </div>
+    <div class="actions" style="margin-top:18px">
+      <button class="btn" id="salvar-evento">Salvar evento</button>
+      <button class="btn ghost" id="cancelar-evento">Cancelar</button>
+    </div>
+  </section>`;
+}
+
+function atualizarCalculo(){
+  const bruto=parseFloat(document.getElementById('f-bruto')?.value)||0;
+  const comissao=parseFloat(document.getElementById('f-comissao')?.value)||0;
+  const fotografo=parseFloat(document.getElementById('f-fotografo')?.value)||0;
+  const impostoPct=parseFloat(document.getElementById('f-imposto-pct')?.value)||6;
+  const imposto=bruto*(impostoPct/100);
+  const musicos=Array.from(document.querySelectorAll('.esc-cache')).reduce((s,i)=>s+(parseFloat(i.value)||0),0);
+  const lucro=bruto-imposto-comissao-fotografo-musicos;
+  const margem=bruto?lucro/bruto:0;
+  const pm=bruto?musicos/bruto:0;
+  const el=id=>document.getElementById(id);
+  if(el('c-bruto'))el('c-bruto').textContent=brl(bruto,1);
+  if(el('c-imposto'))el('c-imposto').textContent='−'+brl(imposto,1);
+  if(el('c-comissao'))el('c-comissao').textContent='−'+brl(comissao,1);
+  if(el('c-fotografo'))el('c-fotografo').textContent='−'+brl(fotografo,1);
+  if(el('c-musicos'))el('c-musicos').textContent='−'+brl(musicos,1);
+  if(el('c-lucro')){el('c-lucro').textContent=(lucro<0?'−':'')+brl(Math.abs(lucro),1);el('c-lucro').className='num'+(lucro<0?' neg':'');}
+  if(el('c-margem'))el('c-margem').textContent=pct(margem);
+  if(el('c-pm'))el('c-pm').textContent=pct(pm);
+}
+
+function render(){
+  renderNav();
+  if(S.tab==='novo'){app.innerHTML=novoEvento();setTimeout(()=>{atualizarCalculo();document.querySelectorAll('input').forEach(i=>i.addEventListener('input',atualizarCalculo));},0);return;}
+  app.innerHTML=S.role==='musico'?musico():S.tab==='agenda'?agenda():S.tab==='acertos'?acertos():painel();
+}
+
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('button');if(!b)return;
+  if(b.dataset.role){S.role=b.dataset.role;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render();window.scrollTo(0,0);return;}
+  if(b.dataset.tab){S.tab=b.dataset.tab;render();return;}
+  if(b.dataset.go){S.tab='agenda';S.sel=+b.dataset.go;render();return;}
+  if(b.dataset.sel){S.sel=+b.dataset.sel;render();return;}
+  if(b.dataset.act==='whats'){const e=EV.find(x=>x.id===S.sel);const n=e.esc.filter(s=>s[3]!=='rec').length;toast(`Escala enviada no WhatsApp para ${n} músicos`);return;}
+  if(b.dataset.act==='add'){toast('No app: busca nos seus músicos, com cachê padrão já preenchido');return;}
+  if(b.dataset.pay){S.paidNow[b.dataset.pay]=1;render();toast(`Pagamento de ${brl(+b.dataset.v)} registrado para ${b.dataset.pay}`);return;}
+  if(b.dataset.resp){const [id,i]=b.dataset.ref.split(',').map(Number);const e=EV.find(x=>x.id===id);e.esc[i][3]=b.dataset.resp;render();
+    toast(b.dataset.resp==='ok'?`Presença confirmada em ${e.d} ${e.t}. A central já vê na escala.`:'Recusa enviada para a Central Allegro');return;}
+  if(b.id==='salvar-evento'){toast('Evento salvo! (no app real, cria na base de dados)');S.tab='agenda';render();return;}
+  if(b.id==='cancelar-evento'){S.tab='agenda';render();return;}
+  if(b.id==='add-musico'){const lista=document.getElementById('escala-lista');const idx=lista.children.length;const row=document.createElement('div');row.className='esc-row';row.style.cssText='display:grid;grid-template-columns:1fr 140px 100px auto;gap:8px;align-items:center';row.innerHTML=`<input type="text" placeholder="Nome do músico" class="esc-nome"><input type="text" placeholder="Instrumento" class="esc-inst"><input type="number" placeholder="Cachê" class="esc-cache" value="400" min="0" step="50"><button class="btn sm ghost" data-remove-esc="${idx}">×</button>`;lista.appendChild(row);atualizarCalculo();return;}
+  if(b.dataset.removeEsc!==undefined){b.closest('.esc-row').remove();atualizarCalculo();return;}
+});
+render();
+</script>
