@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Músicos — Quanto sobra de cada evento que você fecha</title>
+  <meta name="description" content="Sistema feito por um músico que fechou 107 eventos e descobriu quanto estava perdendo. Veja o lucro real de cada casamento depois de pagar músicos, fotógrafo e imposto. R$ 47/mês.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      --bg:#F3F5F4; --surface:#FFFFFF; --sunk:#E8EDEB; --ink:#0A0F0E;
+      --muted:#2D3836; --line:#D8DFDD; --accent:#0E5A61; --accent-soft:#D5E7E7;
+      --on-accent:#FFFFFF; --brass:#7A5812; --brass-soft:#F1E5CB;
+      --ok:#2A7549; --ok-soft:#DAEEE1; --warn:#94640F; --warn-soft:#F5E9CD;
+      --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+      --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+    }
+    @media (prefers-color-scheme:dark){
+      :root:not([data-theme="light"]){
+        --bg:#0E1413; --surface:#152020; --sunk:#1C2827; --ink:#F3F9F7;
+        --muted:#B8C8C5; --line:#2A3735; --accent:#4FA6AA; --accent-soft:#17383A;
+        --on-accent:#0E1413; --brass:#E2BD6B; --brass-soft:#382D16;
+        --ok:#6BBF8B; --ok-soft:#163323; --warn:#DFAD4E; --warn-soft:#382C13;
+      }
+    }
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--body);margin:0}
+    .wrap{max-width:760px;margin:0 auto;padding:0 20px 64px}
+    h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+    a{color:var(--accent);text-decoration:none}
+    .num{font-variant-numeric:tabular-nums}
+    .muted{color:var(--muted)}
+    .center{text-align:center}
+
+    /* 1. Top bar de urgência */
+    .topbar{background:var(--brass);color:#FFFFFF;text-align:center;font-size:13.5px;font-weight:600;padding:9px 16px}
+    @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .topbar{color:#20180A}}
+
+    /* 2. Identidade */
+    .identity{padding:32px 0 8px;text-align:center}
+    .identity .name{font-family:var(--display);font-size:17px;font-weight:700}
+    .identity .name span{color:var(--brass)}
+    .identity .tag{font-size:15px;color:var(--muted);margin-top:2px}
+
+    /* 4. Headline */
+    .hero{padding:24px 0 8px;text-align:center}
+    .hero h1{font-size:clamp(30px,5.5vw,44px);font-weight:700;line-height:1.12}
+    .hero .sub{font-size:18px;color:var(--muted);margin:18px auto 0;max-width:580px;line-height:1.55}
+    .hero .price-hook{margin-top:14px;font-size:16px}
+    .hero .price-hook b{color:var(--accent)}
+
+    /* 6. Checklist de eliminação */
+    .checks{display:grid;gap:10px;max-width:520px;margin:28px auto 0;font-size:15px}
+    .checks div{display:flex;gap:10px;align-items:center}
+    .checks b{color:var(--ok)}
+
+    /* 7. CTA + microcopy */
+    .cta-block{text-align:center;padding:28px 0 8px}
+    .cta{display:inline-block;background:var(--accent);color:var(--on-accent);padding:17px 34px;border-radius:10px;font-weight:700;font-size:17px}
+    .cta:hover{filter:brightness(.92)}
+    .cta-micro{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;font-size:13.5px;color:var(--muted);margin-top:12px}
+    .cta-micro span::before{content:"✓ ";color:var(--ok);font-weight:700}
+
+    /* 8. Barra de ancoragem */
+    .anchor{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:40px 0;background:var(--surface)}
+    .anchor>div{padding:18px 14px;text-align:center;border-right:1px solid var(--line)}
+    .anchor>div:last-child{border-right:0}
+    .anchor .v{font-family:var(--display);font-size:26px;font-weight:700;display:block}
+    .anchor .v.acc{color:var(--accent)}
+    .anchor .l{font-size:12.5px;color:var(--muted)}
+
+    section{margin:48px 0}
+    h2{font-size:clamp(22px,3.5vw,28px)}
+    .body p{margin:0 0 14px;max-width:640px}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:24px}
+    .quote{background:var(--sunk);padding:18px 22px;border-radius:10px;font-size:16.5px;line-height:1.6;margin:20px 0;max-width:640px}
+
+    /* 9. Números do criador */
+    .creator-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:20px}
+    .creator-stats>div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center}
+    .creator-stats .v{font-family:var(--display);font-size:28px;font-weight:700;color:var(--accent);display:block}
+    .creator-stats .l{font-size:12.5px;color:var(--muted)}
+
+    /* 10. Tentativas anteriores */
+    .tried{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:20px}
+    .tried>div{background:var(--sunk);border-radius:10px;padding:18px}
+    .tried h3{font-size:16px;margin-bottom:6px}
+    .tried p{margin:0;font-size:14px;color:var(--muted)}
+
+    /* 15. O que você recebe */
+    .deliver{display:grid;gap:12px;margin-top:20px}
+    .deliver>div{display:flex;justify-content:space-between;gap:14px;align-items:baseline;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+    .deliver .what{font-size:15.5px}
+    .deliver .what b{display:block}
+    .deliver .what span{font-size:13.5px;color:var(--muted)}
+    .deliver .worth{white-space:nowrap;font-size:13.5px;color:var(--brass);font-weight:600}
+
+    /* Preço final */
+    .price-box{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:32px;text-align:center}
+    .price-big{font-family:var(--display);font-size:52px;font-weight:700;color:var(--accent);line-height:1}
+    .price-per{color:var(--muted);margin-top:4px}
+
+    /* Garantia */
+    .guarantee{display:flex;gap:16px;align-items:center;background:var(--ok-soft);border-radius:12px;padding:20px}
+    .guarantee .g{font-size:30px}
+    .guarantee h3{font-size:17px;margin-bottom:4px;color:var(--ok)}
+    .guarantee p{margin:0;font-size:14px;color:var(--muted)}
+
+    /* FAQ */
+    .faq-item{border-bottom:1px solid var(--line);padding:18px 0}
+    .faq-item:last-child{border-bottom:0}
+    .faq-q{font-weight:600;margin-bottom:6px}
+    .faq-a{margin:0;color:var(--muted);font-size:15px}
+
+    footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px;text-align:center;font-size:13px;color:var(--muted)}
+    @media (max-width:600px){
+      .anchor{grid-template-columns:repeat(2,1fr)}
+      .deliver>div{flex-direction:column;gap:4px}
+    }
+  </style>
+</head>
+<body>
+  <!-- 1. Top bar de urgência -->
+  <div class="topbar">🎵 57% do que o músico-agenciador fatura vai pro bolso do músico escalado. E quase ninguém sabe o seu número.</div>
+
+  <div class="wrap">
+    <!-- 2. Identidade -->
+    <div class="identity">
+      <div class="name">Central de Músicos <span>·</span> por Abner Fiorili</div>
+      <div class="tag">O sistema de gestão criado por um músico que agencia músicos</div>
+    </div>
+
+    <!-- 4. Headline de resultado -->
+    <div class="hero">
+      <h1>Veja quanto sobra de cada casamento que você fecha — em 2 minutos</h1>
+      <p class="sub">Você lança o evento, a escala e os custos. O sistema calcula o lucro, a margem e quanto você deve pra cada músico. Sozinho.</p>
+      <p class="price-hook">Por <b>R$ 47/mês</b> — menos do que você perde em um único evento fechado abaixo do preço.</p>
+
+      <!-- 6. Checklist de eliminação de objeção -->
+      <div class="checks">
+        <div><b>✓</b> <span>Sem saber de planilha</span></div>
+        <div><b>✓</b> <span>Sem instalar nada — roda no celular e no computador</span></div>
+        <div><b>✓</b> <span>Seus músicos entram de graça e confirmam no WhatsApp deles</span></div>
+        <div><b>✓</b> <span>Nenhum músico vê quanto você cobra nem quanto você lucra</span></div>
+      </div>
+
+      <!-- 7. CTA com microcopy -->
+      <div class="cta-block">
+        <a href="#preco" class="cta">Quero ver o lucro dos meus eventos →</a>
+        <div class="cta-micro">
+          <span>Acesso imediato</span>
+          <span>Cancela quando quiser</span>
+          <span>7 dias de garantia</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Barra de ancoragem -->
+    <div class="anchor">
+      <div><span class="v">57%</span><span class="l">do faturamento vai pro músico</span></div>
+      <div><span class="v">R$ 66</span><span class="l">foi o lucro de um evento de R$ 1.400</span></div>
+      <div><span class="v">R$ 2.000</span><span class="l">piso abaixo do qual o evento quase não se paga</span></div>
+      <div><span class="v acc">R$ 47</span><span class="l">seu investimento, por mês</span></div>
+    </div>
+
+    <!-- 9. Case do criador -->
+    <section>
+      <h2>Eu sou músico. E administro uma central de verdade.</h2>
+      <div class="body">
+        <p>Meu nome é Abner Fiorili. Toco violino, violoncelo, clarinete e trompete. Também agencio outros músicos pra casamentos, bodas e formaturas.</p>
+        <div class="quote">
+          Eu montei uma planilha pra saber quanto eu realmente ganhava em cada casamento. Descobri que tinha evento que eu fechava achando que era bom — e saía no prejuízo. A planilha funcionou tão bem que virou um sistema. Hoje eu uso ele pra tocar minha central inteira.
+        </div>
+      </div>
+      <div class="creator-stats">
+        <div><span class="v">107</span><span class="l">eventos em 2026</span></div>
+        <div><span class="v">R$ 251 mil</span><span class="l">faturados no ano</span></div>
+        <div><span class="v">R$ 36 mil</span><span class="l">estavam invisíveis na minha planilha</span></div>
+        <div><span class="v">22%</span><span class="l">de margem — menos do que eu pensava</span></div>
+      </div>
+    </section>
+
+    <!-- 10. Tentativas anteriores -->
+    <section>
+      <h2>Se você controla sua central assim, você já perdeu dinheiro</h2>
+      <div class="tried">
+        <div><h3>📋 Planilha</h3><p>Toda fórmula que entra mês novo é uma chance de quebrar. A minha escondeu um mês inteiro: R$ 36 mil fora da conta, sem eu perceber.</p></div>
+        <div><h3>📓 Caderno / anotação</h3><p>Cachê anotado no meio do texto: "Bruno 700$". Na hora do acerto, é garimpo. E não tem como conferir quando o músico cobra.</p></div>
+        <div><h3>💬 Tudo no WhatsApp</h3><p>Escala mandada, resposta nunca vem. Chega na véspera e você não sabe se o sax vai. Músico com dois eventos no mesmo horário? Descobre tarde.</p></div>
+      </div>
+      <p class="muted" style="margin-top:18px;font-size:15px;max-width:640px">A conta sempre existe. O problema é que ela está espalhada — e você só descobre o prejuízo meses depois, quando não dá mais pra corrigir.</p>
+    </section>
+
+    <!-- 12. A virada -->
+    <section>
+      <h2>Quando eu sentei e fiz a conta, apareceram três coisas que eu não sabia</h2>
+      <div class="body">
+        <p><strong>Primeira:</strong> meu ano não era R$ 214 mil. Era R$ 251 mil. Um mês inteiro tinha ficado fora por erro de fórmula — e eu tomei decisão de preço o ano inteiro olhando um número errado.</p>
+        <p><strong>Segunda:</strong> 57% de tudo que entrava saía pra pagar músico. Não é errado. Mas eu fechava orçamento sem saber disso, no chute.</p>
+        <p><strong>Terceira:</strong> abaixo de R$ 2.000, o músico come 65% ou mais do valor. O evento de R$ 1.400 que eu achei que era um bom trabalho? Sobrou R$ 66. Eu levei três músicos, toquei uma cerimônia inteira e ganhei R$ 66.</p>
+      </div>
+    </section>
+
+    <!-- 14. Como funciona: 3 passos -->
+    <section class="card">
+      <h2>Como funciona</h2>
+      <div class="checks" style="max-width:none;margin-top:18px">
+        <div><b>1.</b> <span><strong>Lança o evento</strong> — valor fechado, local, horário, traje. 30 segundos.</span></div>
+        <div><b>2.</b> <span><strong>Monta a escala</strong> — quem toca, instrumento, cachê de cada um. O sistema soma tudo.</span></div>
+        <div><b>3.</b> <span><strong>Vê o lucro</strong> — imposto, custos e músicos calculados. Se a margem ficou abaixo de 10%, você é avisado na hora.</span></div>
+      </div>
+      <div class="cta-block" style="padding:24px 0 8px">
+        <a href="#preco" class="cta">Quero ver o lucro dos meus eventos →</a>
+      </div>
+    </section>
+
+    <!-- 15. O que você recebe -->
+    <section>
+      <h2>O que você recebe por R$ 47/mês</h2>
+      <div class="deliver">
+        <div><span class="what"><b>Lucro de cada evento em 2 minutos</b><span>Lança valor, custos e escala — o cálculo sai pronto</span></span><span class="worth">o cálculo que ninguém faz</span></div>
+        <div><span class="what"><b>Painel do ano</b><span>Faturamento, lucro, margem e ticket médio, sempre atualizados</span></span><span class="worth">a visão que falta</span></div>
+        <div><span class="what"><b>Alerta de margem baixa</b><span>Evento com menos de 10% de margem? Você vê no mês, não um ano depois</span></span><span class="worth">prejuízo evitado</span></div>
+        <div><span class="what"><b>Margem por faixa de preço</b><span>Descobre a partir de quanto vale a pena fechar solo, duo, trio, quarteto</span></span><span class="worth">seu piso de orçamento</span></div>
+        <div><span class="what"><b>Escala com confirmação</b><span>O músico confirma no celular dele. Fim do "você confirma?"</span></span><span class="worth">horas de WhatsApp de volta</span></div>
+        <div><span class="what"><b>Alerta de conflito de horário</b><span>Músico já escalado em outro compromisso? Você sabe antes de escalar</span></span><span class="worth">véspera sem susto</span></div>
+        <div><span class="what"><b>Acertos por músico</b><span>Quanto deve pra cada um, quem já foi pago, quem falta — marcado</span></span><span class="worth">fim do garimpo</span></div>
+        <div><span class="what"><b>Cobrança do cliente</b><span>Sinal e parcelas, com aviso de parcela vencida</span></span><span class="worth">nada esquecido</span></div>
+        <div><span class="what"><b>Conta do músico — de graça, ilimitada</b><span>Ele vê só a escala dele, o cachê dele, o traje. Nunca o valor do evento nem seu lucro</span></span><span class="worth">sua margem, protegida</span></div>
+      </div>
+    </section>
+
+    <!-- Garantia -->
+    <section>
+      <div class="guarantee">
+        <span class="g">🛡️</span>
+        <div>
+          <h3>7 dias de garantia</h3>
+          <p>Entra, lança seus próximos eventos, olha os números. Se não servir, pede reembolso em até 7 dias. Sem pergunta, sem enrolação.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preço final -->
+    <section id="preco">
+      <div class="price-box">
+        <h2 style="margin-bottom:20px">Quanto custa saber quanto você ganha</h2>
+        <div class="price-big num">R$ 47</div>
+        <div class="price-per">por mês · sem fidelidade · cancela quando quiser</div>
+        <p class="muted" style="max-width:480px;margin:20px auto 0">Um evento fechado abaixo do preço custa de R$ 200 a R$ 500. A assinatura do ano inteiro custa R$ 564. Evite <strong>um</strong> evento ruim por ano e o sistema já se pagou.</p>
+        <div class="cta-block">
+          <a href="#" class="cta">Começar agora por R$ 47/mês →</a>
+          <div class="cta-micro">
+            <span>Acesso imediato</span>
+            <span>7 dias de garantia</span>
+            <span>Músicos entram de graça</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+      <h2>Perguntas que você já deve estar fazendo</h2>
+      <div class="faq-item"><div class="faq-q">Minha planilha já resolve.</div><p class="faq-a">A minha também resolvia. Até esconder R$ 36 mil. Toda vez que entra mês novo, a fórmula precisa ser refeita — e é aí que quebra.</p></div>
+      <div class="faq-item"><div class="faq-q">Não tenho tempo de aprender sistema.</div><p class="faq-a">Lançar um evento leva 2 minutos: valor, local, quem toca, quanto cada um ganha. O resto o sistema calcula.</p></div>
+      <div class="faq-item"><div class="faq-q">Meus músicos não vão usar.</div><p class="faq-a">Eles não instalam nada. Recebem um link no WhatsApp e confirmam com um toque. E não pagam nada.</p></div>
+      <div class="faq-item"><div class="faq-q">Não quero que os músicos vejam meus valores.</div><p class="faq-a">Eles não veem. O músico enxerga só a data, o local, o traje e o cachê dele. Nunca o valor do evento nem o seu lucro.</p></div>
+      <div class="faq-item"><div class="faq-q">Faço mais evento de empresa que casamento. Serve?</div><p class="faq-a">Serve. O sistema não pergunta que tipo de evento é — ele calcula valor menos custos. Funciona igual pra casamento, formatura, evento corporativo ou missa.</p></div>
+      <div class="faq-item"><div class="faq-q">E se eu quiser sair?</div><p class="faq-a">Cancela quando quiser, sem multa. E tem 7 dias de garantia.</p></div>
+    </section>
+
+    <!-- CTA final -->
+    <section class="center">
+      <h2>Descubra quanto você ganha de verdade</h2>
+      <p class="muted" style="max-width:480px;margin:14px auto 22px">Você já trabalhou o mês inteiro. Chegou a hora de ver o número.</p>
+      <a href="#preco" class="cta">Começar agora por R$ 47/mês →</a>
+    </section>
+
+    <footer>
+      © 2026 · Central de Músicos · Criado por Abner Fiorili<br>
+      contato: abner@centraldemusicos.com
+    </footer>
+  </div>
+</body>
+</html>
