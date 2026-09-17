@@ -108,6 +108,7 @@
     .faq-a{margin:0;color:var(--muted);font-size:15px}
 
     footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px;text-align:center;font-size:13px;color:var(--muted)}
+    .alt-section{background:#E8EDEB;padding:40px 20px;margin:48px 0;border-radius:16px}
     @media (max-width:600px){
       .anchor{grid-template-columns:repeat(2,1fr)}
       .deliver>div{flex-direction:column;gap:4px}
@@ -116,7 +117,7 @@
 </head>
 <body>
   <!-- 1. Top bar de urgência -->
-  <div class="topbar">🎵 57% do que o músico-agenciador fatura vai pro bolso do músico escalado. E quase ninguém sabe o seu número.</div>
+  <div class="topbar">Músico: 57% do que você fatura vai pro bolso do músico escalado. E quase ninguém sabe o seu número.</div>
 
   <div class="wrap">
     <!-- 2. Identidade -->
@@ -127,9 +128,16 @@
 
     <!-- 4. Headline de resultado -->
     <div class="hero">
-      <h1>Veja quanto sobra de cada casamento que você fecha — em 2 minutos</h1>
-      <p class="sub">Você lança o evento, a escala e os custos. O sistema calcula o lucro, a margem e quanto você deve pra cada músico. Sozinho.</p>
-      <p class="price-hook">Por <b>R$ 47/mês</b> — menos do que você perde em um único evento fechado abaixo do preço.</p>
+      <div style="display:flex;gap:32px;align-items:center;flex-wrap:wrap;margin-bottom:24px">
+        <div style="flex:1;min-width:300px">
+          <h1>Veja quanto sobra de cada casamento que você fecha — em 2 minutos</h1>
+          <p class="sub">Você lança o evento, a escala e os custos. O sistema calcula o lucro, a margem e quanto você deve pra cada músico. Sozinho.</p>
+          <p class="price-hook">Por <b>R$ 47/mês</b> — menos do que você perde em um único evento fechado abaixo do preço.</p>
+        </div>
+        <div style="flex:0 0 200px">
+          <img src="abner_prof.png" alt="Abner Fiorili" width="200" height="200" style="border-radius:16px;box-shadow:0 8px 24px rgb(0 0 0/.15);width:100%;height:auto">
+        </div>
+      </div>
 
       <!-- 6. Checklist de eliminação de objeção -->
       <div class="checks">
@@ -141,7 +149,7 @@
 
       <!-- 7. CTA com microcopy -->
       <div class="cta-block">
-        <a href="#preco" class="cta">Quero ver o lucro dos meus eventos →</a>
+        <a href="#preco" class="cta">Começar agora por R$ 47/mês →</a>
         <div class="cta-micro">
           <span>Acesso imediato</span>
           <span>Cancela quando quiser</span>
@@ -158,30 +166,8 @@
       <div><span class="v acc">R$ 47</span><span class="l">seu investimento, por mês</span></div>
     </div>
 
-    <!-- 9. Case do criador -->
-    <section>
-      <h2>Eu sou músico. E administro uma central de verdade.</h2>
-      <div class="creator">
-        <img src="Foto_abner.png" alt="Abner Fiorili tocando violino numa cerimônia" width="200" height="200">
-        <div class="body" style="margin:0">
-          <p>Meu nome é Abner Fiorili. Toco violino, violoncelo, clarinete e trompete. Também agencio outros músicos pra casamentos, bodas e formaturas.</p>
-          <p style="margin:0">Quem fecho, escalo, cobro e pago — sou eu. O sistema que você está vendo nasceu da minha mesa de trabalho, não de uma empresa de tecnologia.</p>
-        </div>
-      </div>
-        <div class="quote">
-          Eu montei uma planilha pra saber quanto eu realmente ganhava em cada casamento. Descobri que tinha evento que eu fechava achando que era bom — e saía no prejuízo. A planilha funcionou tão bem que virou um sistema. Hoje eu uso ele pra tocar minha central inteira.
-        </div>
-      </div>
-      <div class="creator-stats">
-        <div><span class="v">107</span><span class="l">eventos em 2026</span></div>
-        <div><span class="v">R$ 251 mil</span><span class="l">faturados no ano</span></div>
-        <div><span class="v">R$ 36 mil</span><span class="l">estavam invisíveis na minha planilha</span></div>
-        <div><span class="v">22%</span><span class="l">de margem — menos do que eu pensava</span></div>
-      </div>
-    </section>
-
     <!-- 10. Tentativas anteriores -->
-    <section>
+    <section class="alt-section">
       <h2>Se você controla sua central assim, você já perdeu dinheiro</h2>
       <div class="tried">
         <div><h3>📋 Planilha</h3><p>Toda fórmula que entra mês novo é uma chance de quebrar. A minha escondeu um mês inteiro: R$ 36 mil fora da conta, sem eu perceber.</p></div>
@@ -238,6 +224,27 @@
           <h3>7 dias de garantia</h3>
           <p>Entra, lança seus próximos eventos, olha os números. Se não servir, pede reembolso em até 7 dias. Sem pergunta, sem enrolação.</p>
         </div>
+      </div>
+    </section>
+
+    <!-- 9. Case do criador (movido para depois da garantia) -->
+    <section class="alt-section">
+      <h2>Eu sou músico. E administro uma central de verdade.</h2>
+      <div class="creator">
+        <img src="abner_prof.png" alt="Abner Fiorili tocando violino numa cerimônia" width="200" height="200">
+        <div class="body" style="margin:0">
+          <p>Meu nome é Abner Fiorili. Toco violino, violoncelo, clarinete e trompete. Também agencio outros músicos pra casamentos, bodas e formaturas.</p>
+          <p style="margin:0">Quem fecho, escalo, cobro e pago — sou eu. O sistema que você está vendo nasceu da minha mesa de trabalho, não de uma empresa de tecnologia.</p>
+        </div>
+      </div>
+        <div class="quote">
+          Eu montei uma planilha pra saber quanto eu realmente ganhava em cada casamento. Descobri que tinha evento que eu fechava achando que era bom — e saía no prejuízo. A planilha funcionou tão bem que virou um sistema. Hoje eu uso ele pra tocar minha central inteira.
+        </div>
+      <div class="creator-stats">
+        <div><span class="v">107</span><span class="l">eventos em 2026</span></div>
+        <div><span class="v">R$ 251 mil</span><span class="l">faturados no ano</span></div>
+        <div><span class="v">R$ 36 mil</span><span class="l">estavam invisíveis na minha planilha</span></div>
+        <div><span class="v">22%</span><span class="l">de margem — menos do que eu pensava</span></div>
       </div>
     </section>
 

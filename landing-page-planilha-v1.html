@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Músicos — A planilha que me fez aumentar R$ 150k em 2 meses</title>
+  <meta name="description" content="Em 2025 descobri que estava perdendo dinheiro com minha planilha — ela me fez aumentar R$ 150k em 2 meses. R$ 27 hoje.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      --bg:#F3F5F4; --surface:#FFFFFF; --sunk:#E8EDEB; --ink:#0A0F0E;
+      --muted:#2D3836; --line:#D8DFDD; --accent:#0E5A61; --accent-soft:#D5E7E7;
+      --on-accent:#FFFFFF; --brass:#7A5812; --brass-soft:#F1E5CB;
+      --ok:#2A7549; --ok-soft:#DAEEE1; --warn:#94640F; --warn-soft:#F5E9CD;
+      --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+      --body:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--body);margin:0}
+    .wrap{max-width:760px;margin:0 auto;padding:0 20px 64px}
+    h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+    a{color:var(--accent);text-decoration:none}
+    .num{font-variant-numeric:tabular-nums}
+    .muted{color:var(--muted)}
+    .center{text-align:center}
+    .urgent{background:var(--brass);color:#FFFFFF;text-align:center;font-size:13.5px;font-weight:600;padding:9px 16px}
+
+    .hero{padding:32px 0 16px;text-align:center}
+    .hero h1{font-size:clamp(32px,6vw,46px);font-weight:700;line-height:1.1;margin-bottom:16px}
+    .hero .sub{font-size:17px;color:var(--muted);max-width:560px;margin:0 auto 24px;line-height:1.6}
+    .hero .price-tag{font-size:18px;color:var(--accent);font-weight:600;margin-bottom:20px}
+
+    .cta{display:inline-block;background:var(--accent);color:var(--on-accent);padding:18px 36px;border-radius:10px;font-weight:700;font-size:18px;transition:filter 0.2s}
+    .cta:hover{filter:brightness(.88)}
+    .cta .price{font-size:24px;margin-left:4px}
+
+    .cta-micro{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:center;font-size:13.5px;color:var(--muted);margin-top:14px}
+    .cta-micro span::before{content:"✓ ";color:var(--ok);font-weight:700}
+
+    section{margin:56px 0}
+    h2{font-size:clamp(24px,4vw,30px);margin-bottom:20px}
+    .body p{margin:0 0 16px;max-width:640px;line-height:1.7}
+
+    .card{background:#FAFBFA;border:1px solid var(--line);border-radius:14px;padding:28px;box-shadow:0 2px 8px rgb(0 0 0/.04)}
+    .quote{background:var(--sunk);padding:20px 24px;border-radius:12px;font-size:17px;line-height:1.6;margin:24px 0;max-width:640px;font-style:italic}
+
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:24px}
+    .stats>div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;text-align:center}
+    .stats .v{font-family:var(--display);font-size:32px;font-weight:700;color:var(--accent);display:block;line-height:1}
+    .stats .l{font-size:13px;color:var(--muted);margin-top:4px}
+
+    .price-box{background:var(--surface);border:2px solid var(--accent);border-radius:16px;padding:40px;text-align:center;margin:48px 0}
+    .price-big{font-family:var(--display);font-size:64px;font-weight:700;color:var(--accent);line-height:1}
+    .price-cta{background:var(--brass);color:#FFFFFF;padding:20px 40px;border-radius:12px;font-weight:700;font-size:20px;display:inline-block;margin-top:24px}
+    .price-cta:hover{filter:brightness(.9)}
+
+    .guarantee{display:flex;gap:18px;align-items:center;background:var(--ok-soft);border-radius:12px;padding:24px;margin:32px 0}
+    .guarantee .g{font-size:32px}
+    .guarantee h3{font-size:18px;margin-bottom:6px;color:var(--ok)}
+    .guarantee p{margin:0;font-size:15px;color:var(--muted)}
+
+    .faq-item{border-bottom:1px solid var(--line);padding:20px 0}
+    .faq-item:last-child{border-bottom:0}
+    .faq-q{font-weight:600;margin-bottom:8px;font-size:17px}
+    .faq-a{margin:0;color:var(--muted);font-size:15px;line-height:1.6}
+
+    footer{border-top:1px solid var(--line);margin-top:64px;padding-top:24px;text-align:center;font-size:13px;color:var(--muted)}
+
+    @media (max-width:600px){
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .cta .price{font-size:20px}
+    }
+  </style>
+</head>
+<body>
+  <div class="urgent">Músico: 57% do seu faturamento vai pro bolso do músico escalado. E quase ninguém sabe o seu número.</div>
+
+  <div class="wrap">
+    <div class="hero">
+      <h1>Fechei 107 eventos e achava que lucrava — até montar essa planilha. Em 2 meses, aumentei <b style="color:var(--accent)">R$ 150k</b></h1>
+      <p class="sub">Descobri que estava perdendo dinheiro em cada evento. Montei uma planilha pra entender de verdade. Em 60 dias, aumentei R$ 150 mil.</p>
+      <p class="price-tag">Planilha de gestão + aula de como preencher — por apenas <b>R$ 27</b></p>
+
+      <a href="#comprar" class="cta">Baixar planilha por R$ 27 →</a>
+      <div class="cta-micro">
+        <span>Download imediato</span>
+        <span>Aula inclusa</span>
+        <span>7 dias de garantia</span>
+      </div>
+    </div>
+
+    <section class="alt-section">
+      <h2>Eu sou músico. E administro uma central de verdade.</h2>
+      <div style="display:flex;gap:24px;align-items:center;margin:20px 0;flex-wrap:wrap">
+        <img src="abner_prof.png" alt="Abner Fiorili" width="200" height="200" style="border-radius:16px;object-fit:cover;box-shadow:0 8px 24px rgb(0 0 0/.15);max-width:100%">
+        <div class="body" style="margin:0;flex:1;min-width:280px">
+          <p>Meu nome é Abner Fiorili. Toco violino, violoncelo, clarinete e trompete. Também agencio outros músicos pra casamentos, bodas e formaturas.</p>
+          <p style="margin:0">Quem fecho, escalo, cobro e pago — sou eu. A planilha que você vai receber nasceu da minha mesa de trabalho, não de uma empresa de tecnologia.</p>
+        </div>
+      </div>
+      <div class="quote">
+        "Montei uma planilha pra saber quanto eu realmente ganhava em cada casamento. Descobri que tinha evento que eu fechava achando que era bom — e saía no prejuízo. Em 60 dias, aumentei meu faturamento em R$ 150 mil só de descobrir o que eu não sabia."
+      </div>
+      <div class="stats">
+        <div><span class="v">107</span><span class="l">eventos em 2026</span></div>
+        <div><span class="v">R$ 251 mil</span><span class="l">faturados no ano</span></div>
+        <div><span class="v">R$ 36 mil</span><span class="l">estavam invisíveis</span></div>
+        <div><span class="v">22%</span><span class="l">de margem real</span></div>
+      </div>
+    </section>
+
+    <section class="alt-section">
+      <div class="card">
+        <h2>O que você recebe por R$ 27</h2>
+        <div class="body">
+          <p><b>1. A planilha de gestão de eventos</b> — a mesma que uso pra tocar minha central inteira. Calcula lucro, margem, quanto deve pra cada músico e alerta quando a margem fica abaixo de 10%.</p>
+          <p><b>2. Aula de como preencher</b> — vídeo de 15 minutos mostrando exatamente onde lançar cada informação, como interpretar os números e como usar os alertas de margem.</p>
+          <p><b>3. Cópia no Google Sheets</b> — link pra você fazer uma cópia da planilha no seu próprio Sheets. Não precisa instalar nada, roda no celular e no computador.</p>
+          <p><b>4. 7 dias de garantia</b> — baixa, preenche seus eventos, olha os números. Se não servir, pede reembolso. Sem pergunta, sem enrolação.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="alt-section">
+      <h2>Como funciona</h2>
+      <div class="body">
+        <p><b>1. Você paga R$ 27</b> — checkout seguro, pagamento único. Não é assinatura.</p>
+        <p><b>2. Recebe acesso imediato</b> — download da planilha + link da aula + link pra fazer cópia no Sheets.</p>
+        <p><b>3. Assistir à aula (15 min)</b> — eu mostro exatamente como preencher cada campo da planilha.</p>
+        <p><b>4. Preencher seus eventos</b> — lançar valor, custos, escala. O cálculo sai pronto.</p>
+        <p><b>5. Ver os números reais</b> — lucro, margem, quanto deve pra cada músico. E descobrir onde você está perdendo dinheiro.</p>
+      </div>
+    </section>
+
+    <div class="price-box" id="comprar">
+      <h2 style="margin-bottom:24px">Quanto custa descobrir quanto você ganha de verdade</h2>
+      <div class="price-big num">R$ 27</div>
+      <p class="muted" style="max-width:500px;margin:16px auto 0">Um único evento fechado abaixo do preço custa de R$ 200 a R$ 500. A planilha custa R$ 27. Evite <b>um</b> evento ruim por ano e a planilha já se pagou 10x.</p>
+      <a href="#" class="price-cta">Quero a planilha agora por R$ 27 →</a>
+      <div class="cta-micro" style="margin-top:20px">
+        <span>Download imediato</span>
+        <span>Aula de 15 minutos</span>
+        <span>7 dias de garantia</span>
+      </div>
+    </div>
+
+    <div class="guarantee">
+      <span class="g">Garantia</span>
+      <div>
+        <h3>7 dias de garantia incondicional</h3>
+        <p>Baixa a planilha, assiste à aula, preenche seus próximos eventos. Se não servir, pede reembolso em até 7 dias. Sem pergunta, sem enrolação.</p>
+      </div>
+    </div>
+
+    <section class="alt-section">
+      <h2>Perguntas que você já deve estar fazendo</h2>
+      <div class="faq-item">
+        <div class="faq-q">Minha planilha já resolve.</div>
+        <p class="faq-a">A minha também resolvia. Até esconder R$ 36 mil. Toda vez que entra mês novo, a fórmula precisa ser refeita — e é aí que quebra. A planilha que você vai receber já vem validada.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Não tenho tempo de aprender.</div>
+        <p class="faq-a">A aula tem 15 minutos. É só seguir o passo a passo. Lançar um evento leva 2 minutos: valor, local, quem toca, quanto cada um ganha. O resto a planilha calcula.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Funciona no celular?</div>
+        <p class="faq-a">Sim. Você faz uma cópia no Google Sheets e usa no celular, tablet ou computador. Não precisa instalar nada.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">É assinatura?</div>
+        <p class="faq-a">Não. É pagamento único de R$ 27. Você paga uma vez e a planilha é sua pra sempre.</p>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">E se eu quiser sair?</div>
+        <p class="faq-a">Não tem nada pra sair. Você paga R$ 27 uma vez, baixa a planilha e é sua. E tem 7 dias de garantia.</p>
+      </div>
+    </section>
+
+    <section class="center">
+      <h2>Descubra quanto você ganha de verdade</h2>
+      <p class="muted" style="max-width:500px;margin:16px auto 28px">Você já trabalhou o mês inteiro. Chegou a hora de ver o número — em vez de chutar.</p>
+      <a href="#comprar" class="cta">Baixar minha cópia por R$ 27 →</a>
+    </section>
+
+    <footer>
+      © 2026 · Central de Músicos · Criado por Abner Fiorili<br>
+      contato: abner@centraldemusicos.com
+    </footer>
+  </div>
+</body>
+</html>
